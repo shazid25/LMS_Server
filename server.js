@@ -17,12 +17,9 @@ app.use(cors())
 app.use(express.json());
 
 //routes
-app.get('/', (req, res) => {
-    res.send('Server is running');
-});
+app.get('/', (req, res) => res.send('API is working'));
 
-// Webhook route - no need to pass express.json() here since it's applied globally
-app.post('/clerk', clerkWebhooks); 
+app.post('/clerk', express.json(), clerkWebhooks); 
 
 //port
 const PORT = process.env.PORT || 5000;
