@@ -1,10 +1,16 @@
-import { clerkClient } from '@clerk/express'
-import Course from '../models/Course'
+import { clerkClient } from '@clerk/express';
+import Course from "../models/Course.js";
+
 import { v2 as cloudinary } from 'cloudinary'
 
 // update role to educator
 export const updateRoleToEducator = async (req, res) => {
   try {
+    // Ensure authentication info is present (protectEducator should set req.auth.userId)
+    if (!req || !req.auth || !req.auth.userId) {
+      return res.status(401).json({ success: false, message: 'Unauthorized: missing authenticated user' })
+    }
+
     const userId = req.auth.userId
 
     await clerkClient.users.updateUserMetadata(userId, {
@@ -16,7 +22,7 @@ export const updateRoleToEducator = async (req, res) => {
     res.json({ success: true, message: 'You can publish a course now' })
 
   } catch (error) {
-    res.json({ success: false, message: error.message })
+    res.status(500).json({ success: false, message: error.message })
   }
 }
 
